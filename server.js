@@ -78,10 +78,14 @@ app.get('/api/image/:fileId', async (req, res) => {
 
         // 1. Get file path from Telegram
         const getFileUrl = `https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`;
-        const fileResponse = await axios.get(getFileUrl);
+        const fileResponse = await axios.get(getFileUrl, {
+            validateStatus: function (status) {
+                return status < 500; // Resolve only if the status code is less than 500
+            }
+        });
 
-        if (!fileResponse.data.ok) {
-            return res.status(404).json({ error: 'Image not found' });
+        if (!fileResponse.data || !fileResponse.data.ok) {
+            return res.status(404).sendFile(path.join(__dirname, 'public', 'error.html'));
         }
 
         const filePath = fileResponse.data.result.file_path;
@@ -108,7 +112,7 @@ app.get('/api/image/:fileId', async (req, res) => {
         imageStream.data.pipe(res);
     } catch (error) {
         console.error('Error proxying image:', error.message);
-        res.status(500).json({ error: 'Failed to retrieve image' });
+        res.status(500).sendFile(path.join(__dirname, 'public', 'error.html'));
     }
 });
 
