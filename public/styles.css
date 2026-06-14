@@ -357,6 +357,15 @@ header {
 
 /* Mobile Responsive */
 @media (max-width: 600px) {
+    /* Hide scrollbar for mobile */
+    body {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    body::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
+    }
+
     .container {
         padding: 1rem;
     }
