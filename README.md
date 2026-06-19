@@ -1,61 +1,70 @@
-# ☁️ CloudGram
+# CloudGram ☁️
 
-**A sleek, serverless-ready image hosting platform powered by Telegram.**
+CloudGram is a premium, limitless image hosting service powered by the Telegram Bot API. It provides a beautiful, secure, and fast way to upload images and generate shareable links or embed codes.
 
-CloudGram ingeniously uses Telegram's infrastructure as an unlimited cloud storage backend for your images. Paired with a modern, glassmorphism-inspired UI, it provides a seamless drag-and-drop experience for uploading and sharing images instantly.
+## Features ✨
 
-## ✨ Features
+- **Drag & Drop Uploads**: Seamlessly upload images by dragging and dropping them into the beautiful glassmorphism UI.
+- **Fast Image Hosting**: Images are hosted on Telegram's robust servers and proxied back instantly.
+- **Auto-Generated URLs**: Get direct links to your uploaded images instantly.
+- **HTML Embed Code**: Copy a ready-to-use `<img />` tag to embed the image anywhere on the web.
+- **API Support**: Integrate image uploading directly into your own apps with a robust REST API.
 
-- **Unlimited Storage**: Leverages Telegram bots to store images without traditional cloud storage limits.
-- **Beautiful UI**: Modern dark mode with a dynamic glassmorphism design and micro-animations.
-- **Drag & Drop**: Seamlessly drag and drop images or browse files to upload.
-- **Smart Proxying**: Images are streamed and cached directly through the backend, keeping your Telegram bot token secure.
-- **Vercel Ready**: Pre-configured for one-click serverless deployment on Vercel.
-- **Custom Fallbacks**: Graceful error handling with custom 404 pages for deleted or missing media.
+## Demo 🎥
 
-## 🛠 Tech Stack
+Here is a look at the UI and workflow:
 
-- **Frontend**: Vanilla HTML, CSS3 (Glassmorphism), JavaScript
-- **Backend**: Node.js, Express.js
-- **Storage/API**: Telegram Bot API, Axios, Multer
+![Upload Demo](/Users/gauthambala/.gemini/antigravity-ide/brain/99e82c78-d26a-4098-a9fc-2150d702f846/demo_1781853384597.webp)
 
-## 🚀 Quick Start
+*(Note: The animation above is a WebP video captured showing the CloudGram interface)*
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) installed
-- A Telegram Bot Token (from [@BotFather](https://t.me/botfather))
-- A Telegram Chat/Channel ID
+## API Integration 💻
 
-### 2. Installation
+You can also use our API directly. The API accepts a `multipart/form-data` request with an `image` field.
 
-Clone the repository and install dependencies:
+### Endpoint Details
+- **URL:** `/api/upload`
+- **Method:** `POST`
+- **Content-Type:** `multipart/form-data`
 
+### cURL Example
 ```bash
-npm install
+curl -X POST https://cloudgram-ashy.vercel.app/api/upload \
+  -F "image=@/path/to/your/image.png"
 ```
 
-### 3. Environment Variables
+### JavaScript Fetch Example
+```javascript
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('image', file);
 
-Create a `.env` file in the root directory:
+  const response = await fetch('https://cloudgram-ashy.vercel.app/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
 
-```env
-PORT=3000
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-TELEGRAM_CHAT_ID=your_target_chat_or_channel_id
+  const data = await response.json();
+  if (data.success) {
+    console.log('Image URL:', data.url);
+  }
+};
 ```
 
-### 4. Run Locally
+### Response Format
 
-Start the development server:
-
-```bash
-node server.js
+**Success (200)**
+```json
+{
+  "success": true,
+  "fileId": "AgACAgUAAxkBAAE...",
+  "url": "https://cloudgram-ashy.vercel.app/api/image/AgACAgUAAxkBAAE..."
+}
 ```
-Navigate to `http://localhost:3000` to access the application.
 
-## 📦 Deployment
-
-CloudGram is optimized for Vercel. Simply push your code to a Git repository and import the project into Vercel. Ensure you add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` to your Environment Variables in the Vercel project settings.
-
----
-*Built with simplicity and aesthetics in mind.*
+**Error (400 / 500)**
+```json
+{
+  "error": "No image uploaded"
+}
+```
