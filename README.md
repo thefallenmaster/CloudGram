@@ -14,7 +14,7 @@ CloudGram is a premium, limitless image hosting service powered by the Telegram 
 
 Here is a look at the UI and workflow:
 
-![Upload Demo](/Users/gauthambala/.gemini/antigravity-ide/brain/99e82c78-d26a-4098-a9fc-2150d702f846/demo_1781853384597.webp)
+![Upload Demo](/Users/gauthambala/.gemini/antigravity-ide/brain/99e82c78-d26a-4098-a9fc-2150d702f846/demo_new_1781853769451.webp)
 
 *(Note: The animation above is a WebP video captured showing the CloudGram interface)*
 
