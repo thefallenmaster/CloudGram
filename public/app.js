@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageUrlInput = document.getElementById('image-url');
     const copyBtn = document.getElementById('copy-btn');
     const uploadAnotherBtn = document.getElementById('upload-another-btn');
+    const showEmbedBtn = document.getElementById('show-embed-btn');
+    const embedContainer = document.getElementById('embed-container');
+    const embedCodeInput = document.getElementById('embed-code');
+    const copyEmbedBtn = document.getElementById('copy-embed-btn');
     const toast = document.getElementById('toast');
 
     // Prevent default drag behaviors
@@ -110,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok && data.success) {
                 // Success!
                 imageUrlInput.value = data.url;
+                embedCodeInput.value = `<img src="${data.url}" alt="Uploaded via CloudGram" />`;
                 
                 // Hide upload, show result
                 uploadSection.classList.add('hidden');
@@ -164,8 +169,49 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
+    // Toggle embed code
+    showEmbedBtn.addEventListener('click', () => {
+        embedContainer.classList.toggle('hidden');
+    });
+
+    // Copy embed code
+    copyEmbedBtn.addEventListener('click', () => {
+        embedCodeInput.select();
+        embedCodeInput.setSelectionRange(0, 99999);
+        
+        navigator.clipboard.writeText(embedCodeInput.value)
+            .then(() => {
+                showToast('Embed code copied! 📋');
+                copyEmbedBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Copied
+                `;
+                copyEmbedBtn.style.color = 'var(--success)';
+                copyEmbedBtn.style.borderColor = 'var(--success)';
+                
+                setTimeout(() => {
+                    copyEmbedBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    `;
+                    copyEmbedBtn.style.color = '';
+                    copyEmbedBtn.style.borderColor = '';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Could not copy text: ', err);
+                showToast('Failed to copy embed code', true);
+            });
+    });
+
     // Upload another
     uploadAnotherBtn.addEventListener('click', () => {
+        embedContainer.classList.add('hidden');
         resultSection.classList.add('hidden');
         uploadSection.classList.remove('hidden');
         uploadContent.classList.remove('hidden');
